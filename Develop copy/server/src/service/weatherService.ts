@@ -119,14 +119,16 @@ private cityName: string = '';
   
   // TODO: Complete getWeatherForCity method
   async getWeatherForCity(city: string) {
+    this.cityName = city;
       const coordinates = await this.fetchAndDestructureLocationData();
     if (!coordinates) {
       console.error(error);
       return null;
     }
     const weatherData = await this.fetchWeatherData(coordinates);
-    if (!weatherData) return null;
-    return this.parseCurrentWeather(weatherData);
+    const currentWeather = this.parseCurrentWeather(weatherData);
+    const forecastArray = this.buildForecastArray(currentWeather, weatherData.list);
+    return{ currentWeather, forecastArray};
 } 
   }
 
