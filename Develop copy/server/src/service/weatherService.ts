@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { error } from 'node:console';
+// import { error } from 'node:console';
 dotenv.config();
 
 // TODO: Define an interface for the Coordinates object
@@ -52,7 +52,7 @@ private cityName: string = '';
       console.log('Location Data:', data);
       return data;
     } catch (error) {
-      console.error(error);
+      console.error(error, 'error fetching location');
       return null;
     }
   }
@@ -79,7 +79,7 @@ private cityName: string = '';
     if (Array.isArray(locationData) && locationData.length > 0) {
       return this.destructureLocationData(locationData[0]);
     } else {
-      console.error(error);
+      console.error('error fetching and destructuring location data');
       return null;
     }
   }
@@ -92,27 +92,27 @@ private cityName: string = '';
   // TODO: Build parseCurrentWeather method
   private parseCurrentWeather(response: any) {
     const city = this.cityName;
-    const date = new Date(response.list[0].dt * 1000).toLocaleDateString();
-    const icon = response.list[0].weather[0].icon;
-    const description = response.list[0].weather[0].description;
-    const temp = response.list[0].main.temp;
-    const humidity = response.list[0].main.humidity
-    const windSpeed = response.list[0].windSpeed
+    const date = new Date(response.dt * 1000).toLocaleDateString();
+    const icon = response.weather[0].icon;
+    const description = response.weather[0].description;
+    const temp = response.main.temp;
+    const humidity = response.main.humidity
+    const windSpeed = response.wind.speed
     
     return new Weather(city, date, icon, description, temp, humidity, windSpeed)
   }
   // TODO: Complete buildForecastArray method
   private buildForecastArray(currentWeather: Weather, weatherData: any[]) {
-    const forecastArray = [];
+    const forecastArray = [currentWeather];
     forecastArray.push(currentWeather);
-    for (let i = 1; 1 < weatherData.length; i++){
+    for (let i = 1; i < weatherData.length; i++){
       const city = this.cityName;
-      const date = new Date(weatherData[i] * 1000).toLocaleDateString();
+      const date = new Date(weatherData[i].dt * 1000).toLocaleDateString();
       const icon = weatherData[i].weather[0].icon;
       const description = weatherData[i].weather[0].description;
       const temp = weatherData[i].main.temp;
       const humidity = weatherData[i].main.humidity
-      const windSpeed = weatherData[i].windSpeed
+      const windSpeed = weatherData[i].wind.speed
       forecastArray.push(new Weather(city, date, icon, description, temp, humidity, windSpeed))
     }
     }
@@ -122,13 +122,13 @@ private cityName: string = '';
     this.cityName = city;
       const coordinates = await this.fetchAndDestructureLocationData();
     if (!coordinates) {
-      console.error(error);
+      console.error('error fetching coordinates');
       return null;
     }
     const weatherData = await this.fetchWeatherData(coordinates);
     const currentWeather = this.parseCurrentWeather(weatherData);
     const forecastArray = this.buildForecastArray(currentWeather, weatherData.list);
-    return{ currentWeather, forecastArray};
+    return{ currentWeather, forecastArray };
 } 
   }
 

@@ -21,7 +21,7 @@ class HistoryService {
         const data = await fs.readFile(this.path, 'utf-8');
         return JSON.parse(data);
       } catch (error) {
-        console.log(error);
+        console.log('error fetching history');
         return [];
       }
     }
@@ -44,7 +44,7 @@ class HistoryService {
     cities.push(newCity);
     await this.write(cities);
   } catch (error) {
-    console.log(error);
+    console.log('error adding city to search history');
   }
 }
   // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
